@@ -1,0 +1,13 @@
+import { useState } from "react";
+import Button from "../../components/Button";
+import Alert from "../../components/Alert";
+import { useAuth } from "../../context/AuthContext";
+import { api } from "../../services/api";
+
+export default function ProfilePage() {
+  const { user, refreshUser } = useAuth(); const [details, setDetails] = useState({ firstName: user?.firstName || "", lastName: user?.lastName || "", name: user?.name || "", email: user?.email || "" }); const [passwords, setPasswords] = useState({ currentPassword: "", newPassword: "" }); const [message, setMessage] = useState(""); const [error, setError] = useState("");
+  const saveProfile = async (event) => { event.preventDefault(); setError(""); try { await api.updateProfile(details); await refreshUser(); setMessage("Profile updated."); } catch (err) { setError(err.message); } };
+  const savePassword = async (event) => { event.preventDefault(); setError(""); try { await api.changePassword(passwords); setPasswords({ currentPassword: "", newPassword: "" }); setMessage("Password changed."); } catch (err) { setError(err.message); } };
+  const input = "mt-1 w-full rounded-lg border border-blue-300 p-2";
+  return <section className="mx-auto max-w-2xl px-4 py-8"><h1 className="text-3xl font-bold">My profile</h1><Alert>{error}</Alert><Alert type="success">{message}</Alert><form onSubmit={saveProfile} className="mt-5 grid gap-4 rounded-xl border-2 border-blue-900 bg-blue-100 p-5"><label>First name<input className={input} value={details.firstName} onChange={(e) => setDetails({ ...details, firstName: e.target.value })} /></label><label>Last name<input className={input} value={details.lastName} onChange={(e) => setDetails({ ...details, lastName: e.target.value })} /></label><label>Email<input className={input} type="email" required value={details.email} onChange={(e) => setDetails({ ...details, email: e.target.value })} /></label><Button type="submit" variant="primary">Save profile</Button></form><form onSubmit={savePassword} className="mt-6 grid gap-4 rounded-xl border-2 border-blue-900 bg-blue-100 p-5"><h2 className="text-xl font-bold">Change password</h2><label>Current password<input required className={input} type="password" value={passwords.currentPassword} onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })} /></label><label>New password<input required minLength="8" className={input} type="password" value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} /></label><Button type="submit" variant="primary">Change password</Button></form></section>;
+}

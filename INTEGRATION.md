@@ -1,0 +1,26 @@
+# Bulldogs Exchange client integration
+
+Set the API base URL before starting the app. Copy `.env.example` to `.env` and update the URL for your server:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+The client sends JSON and includes `Authorization: Bearer <JWT>` after sign-in. It expects these conventional REST endpoints:
+
+| Feature | Endpoint |
+| --- | --- |
+| Authentication | `POST /auth/login`, `POST /auth/register`, `GET/PATCH /auth/me`, `PATCH /auth/change-password` |
+| Products | `GET/POST /products`, `GET/PATCH /products/:id` |
+| Orders | `GET/POST /orders`, `PATCH /orders/:id` |
+| Reviews | `GET /products/:id/reviews`, `POST /products/:id/reviews`, `GET/PATCH /reviews/:id` |
+| Users | `GET /users`, `PATCH /users/:id` |
+
+Successful login/register responses must contain a `token` (or `accessToken`) and a `user` (or `account`) object. User data needs a `role` of `admin` or `customer`; admin routes are blocked on the client for every other role. API errors should return a JSON `message` so the UI can show a useful error.
+
+## Before submission
+
+1. Start MongoDB and the backend, create customer and admin accounts, then set the correct `VITE_API_URL`.
+2. Test both roles: customer registration/login, product search/category filter, review, cart/order, profile and logout; then admin product CRUD, order status changes, review edit, and user active/inactive controls.
+3. If your backend uses different route names or field names, update only `src/services/api.js` and the documented response-field adapters in the page components.
+4. Capture screenshots/output for each requirement, paste the relevant source-file names and screenshots into the provided Word template, complete your name/section, and export it as `Surname_LongExam1_CTADWEBL.pdf`.
