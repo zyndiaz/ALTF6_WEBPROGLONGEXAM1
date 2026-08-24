@@ -3,14 +3,14 @@ import { useParams } from "react-router-dom";
 import Button from "../../components/Button.jsx";
 import productImages from "../../assets/product-images";
 import Alert from "../../components/Alert";
-import { api } from "../../services/api";
+import { api, resolveImageUrl } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 
 function ProductPage() {
   const { id } = useParams(); const [product, setProduct] = useState(null); const [reviews, setReviews] = useState([]); const [error, setError] = useState(""); const [review, setReview] = useState({ rating: 5, comment: "" }); const { user } = useAuth(); const { addItem } = useCart();
   useEffect(() => { api.product(id).then((data) => { setProduct(data); return api.reviews(id); }).then((data) => setReviews(Array.isArray(data) ? data : data.reviews || [])).catch((err) => setError(err.message)); }, [id]);
-  const imageSrc = product?.imageUrl || product?.image || productImages[product?.name];
+  const imageSrc = resolveImageUrl(product?.imageUrl || product?.image) || productImages[product?.name];
   const addToCart = () => { if (!user) return setError("Please log in before adding an item to your cart."); addItem(product); };
   const submitReview = async (event) => { event.preventDefault(); try { const saved = await api.createReview(id, { ...review, rating: Number(review.rating) }); setReviews((current) => [saved, ...current]); setReview({ rating: 5, comment: "" }); } catch (err) { setError(err.message); } };
 

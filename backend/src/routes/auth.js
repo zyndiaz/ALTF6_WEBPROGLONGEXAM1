@@ -30,7 +30,7 @@ router.post("/login", async (req, res, next) => {
 router.get("/me", requireAuth, (req, res) => res.json(userResponse(req.user)));
 router.patch("/me", requireAuth, async (req, res, next) => {
   try {
-    const { firstName, lastName, email } = req.body;
+    const { email } = req.body;
     if (email && email.toLowerCase() !== req.user.email && await User.exists({ email: email.toLowerCase() })) return res.status(409).json({ message: "An account with this email already exists." });
     ["firstName", "lastName", "email"].forEach((field) => { if (req.body[field] !== undefined) req.user[field] = req.body[field]; });
     await req.user.save(); res.json(userResponse(req.user));

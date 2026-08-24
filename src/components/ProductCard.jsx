@@ -1,8 +1,9 @@
 import Button from "./Button";
 import productImages from "../assets/product-images";
+import { resolveImageUrl } from "../services/api";
 
 const ProductCard = ({ product, index }) => {
-  const imageSrc = product.imageUrl || product.image || productImages[product.name];
+  const imageSrc = resolveImageUrl(product.imageUrl || product.image) || productImages[product.name];
   const id = product._id || product.id || product.slug;
   const description = product.description || product.content?.[0] || "Official Bulldogs Exchange merchandise.";
 
